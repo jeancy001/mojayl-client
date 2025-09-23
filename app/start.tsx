@@ -1,90 +1,130 @@
-import LogoIcons from '@/components/LogoIcons'
-import PressableButton from '@/components/PressableButton'
-import { useRouter } from 'expo-router'
-import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Ionicons } from "@expo/vector-icons"; // Pour l’icône du mode nuit
+// import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
+import React from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const Start = () => {
-    const router = useRouter()
+export default function WelcomeScreen() {
+  //  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.contentWrapper}>
-        <LogoIcons/>
+      {/* Header avec titre et icône */}
+      <View style={styles.header}>
+        <Text style={styles.welcomeText}>Welcome</Text>
+        <Ionicons name="moon-outline" size={24} color="#0047FF" />
+      </View>
 
-        {/* Title + Subtitle */}
-        <View style={styles.textWrapper}>
-          <Text style={styles.title}>
-            Enjoy your holiday {"\n"} with{" "}
-            <Text style={styles.highlight}>Mojayl</Text>
-          </Text>
+      {/* Sous-texte */}
+      <Text style={styles.subtitle}>Login or signup to continue</Text>
 
-          <Text style={styles.subtitle}>
-            Keep your travel very comfortable, easy {"\n"} and explore the world with Travelm.
-          </Text>
-        </View>
+      {/* Illustration */}
+      <Image
+        source={require("../assets/images/illustration.png")} // Mets ton image ici
+        style={styles.image}
+        resizeMode="contain"
+      />
 
-        {/* Button */}
-        <View style={styles.buttonWrapper}>
-          <PressableButton title={"Explore"} onPress={() => router.replace('/login')} />
-        </View>
-        </View>
+      {/* Nom de l'app */}
+      <Text style={styles.appName}>SchedIt</Text>
+      <Text style={styles.appDescription}>A Family Scheduling App{'\n'}For Parents</Text>
 
-        {/* Bottom Image */}
-        <View style={styles.imageWrapper}>
-          <Image
-            style={styles.image}
-            source={require("../assets/images/Profile.png")}
-            resizeMode="cover"
-          />
-        </View>
+      {/* Boutons */}
+      <TouchableOpacity
+        style={styles.primaryButton}
+        onPress={() => router.push("/register")}
+      >
+        <Text style={styles.primaryButtonText}>Create Account</Text>
+      </TouchableOpacity>
 
- 
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={() => router.push("/login")}
+      >
+        <Text style={styles.secondaryButtonText}>Already have an account</Text>
+      </TouchableOpacity>
+
+      {/* Option invité */}
+      <Text style={styles.guestText}>Continue as a guest?</Text>
     </View>
-  )
+  );
 }
-
-export default Start
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    // alignItems: "center",
   },
-  contentWrapper: {
-    marginTop:30,
-    paddingHorizontal:20,
-    paddingTop: 30,
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 0,
   },
-
-  textWrapper: {
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 22,
+  welcomeText: {
+    fontSize: 34,
     fontWeight: "bold",
-    color: "#222222",
-    lineHeight: 28,
-  },
-  highlight: {
-    color: "#FF455B",
+    color: "#0047FF",
   },
   subtitle: {
-    marginTop: 20,
     fontSize: 14,
-    lineHeight: 20,
-    color: "#777777",
-    textAlign: "justify",
-  },
-  buttonWrapper: {
-    marginTop: 20,
-    alignItems: "flex-start",
-  },
-  imageWrapper: {
-    flex: 1,
-    justifyContent: "flex-end",
+    color: "#555",
+    marginBottom: 40,
+    fontWeight: "bold",
+    
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: 200,
+    marginBottom: 20,
   },
-})
+  appName: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#0047FF",
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  appDescription: {
+    fontSize: 14,
+    textAlign: "center",
+    color: "#333",
+    marginBottom: 30,
+  },
+  primaryButton: {
+    backgroundColor: "#0047FF",
+    width: "100%",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  primaryButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  secondaryButton: {
+    borderColor: "#0047FF",
+    borderWidth: 1,
+    width: "100%",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  secondaryButtonText: {
+    color: "#0047FF",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  guestText: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 10,    
+    textAlign: "center",
+  },
+});

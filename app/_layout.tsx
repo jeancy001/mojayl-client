@@ -19,6 +19,9 @@ export default function RootLayout() {
       <Stack initialRouteName="index" screenOptions={{headerShown:false}}>
         <Stack.Screen name="index" />
         <Stack.Screen name="didacticiel" />
+        <Stack.Screen name="register" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="forgot" />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
