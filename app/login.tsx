@@ -1,4 +1,4 @@
-
+import { useTheme } from "@/context/theme-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Checkbox } from "expo-checkbox";
 import { router } from "expo-router";
@@ -15,6 +15,8 @@ import {
 } from "react-native";
 
 const LoginScreen: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [keepLoggedIn, setKeepLoggedIn] = useState<boolean>(false);
@@ -29,8 +31,8 @@ const LoginScreen: React.FC = () => {
       style={[
         styles.root,
         {
-          paddingTop:
-            Platform.OS === "android" ? StatusBar.currentHeight ?? 20 : 20,
+          backgroundColor: theme.colors.background,
+          paddingTop: Platform.OS === "android" ? StatusBar.currentHeight ?? 20 : 20,
         },
       ]}
     >
@@ -42,27 +44,36 @@ const LoginScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.iconBtn}>
-            <Ionicons name="arrow-back" size={28} color="#0047FF" />
+            <Ionicons name="arrow-back" size={28} color={theme.colors.primary} />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="moon-outline" size={28} color="#0047FF" />
+
+          {/* Theme toggle */}
+          <TouchableOpacity onPress={toggleTheme}>
+            <Ionicons
+              name={theme.dark ? "sunny" : "moon-outline"}
+              size={28}
+              color={theme.colors.primary}
+            />
           </TouchableOpacity>
         </View>
 
         {/* Title */}
-        <Text style={styles.title}>Login Account</Text>
-        <Text style={styles.subtitle}>Welcome Back 👋</Text>
+        <Text style={[styles.title, { color: theme.colors.primary }]}>Login Account</Text>
+        <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>Welcome Back 👋</Text>
 
         {/* Email */}
         <View style={styles.inputGroup}>
           <View style={styles.inputHeader}>
-            <Text style={styles.inputLabel}>Email Address</Text>
-            <Text style={styles.link}>Use Mobile?</Text>
+            <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Email Address</Text>
+            <Text style={[styles.link, { color: theme.colors.primary }]}>Use Mobile?</Text>
           </View>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              { backgroundColor: theme.colors.card, borderColor: theme.colors.border, color: theme.colors.text },
+            ]}
             placeholder="Enter your email"
-            placeholderTextColor="#aaa"
+            placeholderTextColor={theme.colors.placeholder}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -72,25 +83,21 @@ const LoginScreen: React.FC = () => {
 
         {/* Password */}
         <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Password</Text>
+          <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Password</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
-              style={styles.input}
+              style={[
+                styles.input,
+                { backgroundColor: theme.colors.card, borderColor: theme.colors.border, color: theme.colors.text },
+              ]}
               placeholder="Enter your password"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={theme.colors.placeholder}
               secureTextEntry={!showPassword}
               value={password}
               onChangeText={setPassword}
             />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={22}
-                color="#666"
-              />
+            <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color={theme.colors.secondary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -101,25 +108,25 @@ const LoginScreen: React.FC = () => {
             <Checkbox
               value={keepLoggedIn}
               onValueChange={setKeepLoggedIn}
-              color={keepLoggedIn ? "#0047FF" : undefined}
+              color={keepLoggedIn ? theme.colors.primary : undefined}
             />
-            <Text style={styles.checkboxText}>Keep me logged in</Text>
+            <Text style={[styles.checkboxText, { color: theme.colors.text }]}>Keep me logged in</Text>
           </View>
-          <Text style={styles.link} onPress={() => router.push("/forgot")}>
+          <Text style={[styles.link, { color: theme.colors.primary }]} onPress={() => router.push("/forgot")}>
             Forgot Password?
           </Text>
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.primaryButton} onPress={handleLogin}>
+        <TouchableOpacity style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]} onPress={handleLogin}>
           <Text style={styles.primaryButtonText}>Login</Text>
         </TouchableOpacity>
 
         {/* Divider */}
         <View style={styles.divider}>
-          <View style={styles.line} />
-          <Text style={styles.orText}>or sign in with</Text>
-          <View style={styles.line} />
+          <View style={[styles.line, { backgroundColor: theme.colors.border }]} />
+          <Text style={[styles.orText, { color: theme.colors.secondary }]}>or sign in with</Text>
+          <View style={[styles.line, { backgroundColor: theme.colors.border }]} />
         </View>
 
         {/* Social Buttons */}
@@ -136,10 +143,10 @@ const LoginScreen: React.FC = () => {
         </View>
 
         {/* Footer */}
-        <Text style={styles.footerText}>
+        <Text style={[styles.footerText, { color: theme.colors.text }]}>
           Don’t have an account?{" "}
           <Text
-            style={styles.footerLink}
+            style={[styles.footerLink, { color: theme.colors.primary }]}
             onPress={() => router.push("/register")}
           >
             Sign Up
@@ -149,6 +156,7 @@ const LoginScreen: React.FC = () => {
     </View>
   );
 };
+
 
 export default LoginScreen;
 

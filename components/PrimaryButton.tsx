@@ -1,25 +1,34 @@
-
 import React from "react";
 import {
-    GestureResponderEvent,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
+  GestureResponderEvent,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 
 interface ButtonProps {
   title: string;
   onPress: (event: GestureResponderEvent) => void;
+  buttonStyle?: StyleProp<ViewStyle>; // optional custom style for button
+  textStyle?: StyleProp<TextStyle>;   // optional custom style for text
 }
 
-const PrimaryButton: React.FC<ButtonProps> = ({ title, onPress }) => {
+const PrimaryButton: React.FC<ButtonProps> = ({
+  title,
+  onPress,
+  buttonStyle,
+  textStyle,
+}) => {
   return (
     <TouchableOpacity
-      style={styles.buttonWrapper}
+      style={[styles.buttonWrapper, buttonStyle]}
       activeOpacity={0.8}
       onPress={onPress}
     >
-      <Text style={styles.text}>{title}</Text>
+      <Text style={[styles.text, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -47,4 +56,3 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
-

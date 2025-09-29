@@ -1,6 +1,6 @@
-
+import { useTheme } from "@/context/theme-context";
 import { Ionicons } from "@expo/vector-icons";
-import { Checkbox } from "expo-checkbox";
+import Checkbox from "expo-checkbox";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -15,13 +15,14 @@ import {
 } from "react-native";
 
 const RegisterScreen: React.FC = () => {
+  const { theme, toggleTheme } = useTheme(); // get theme and toggle function
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isChecked, setChecked] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   const handleRegister = () => {
     console.log("Registering:", { email, password, confirmPassword, isChecked });
@@ -32,8 +33,8 @@ const RegisterScreen: React.FC = () => {
       style={[
         styles.root,
         {
-          paddingTop:
-            Platform.OS === "android" ? StatusBar.currentHeight ?? 20 : 20,
+          backgroundColor: theme.colors.background,
+          paddingTop: Platform.OS === "android" ? StatusBar.currentHeight ?? 20 : 20,
         },
       ]}
     >
@@ -45,27 +46,33 @@ const RegisterScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.iconBtn}>
-            <Ionicons name="arrow-back" size={28} color="#0047FF" />
+            <Ionicons name="arrow-back" size={28} color={theme.colors.primary} />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="moon-outline" size={28} color="#0047FF" />
+
+          {/* Theme Toggle */}
+          <TouchableOpacity onPress={toggleTheme}>
+            <Ionicons
+              name={theme.dark ? "sunny" : "moon-outline"}
+              size={28}
+              color={theme.colors.primary}
+            />
           </TouchableOpacity>
         </View>
 
         {/* Title */}
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Sign up to continue</Text>
+        <Text style={[styles.title, { color: theme.colors.primary }]}>Create Account</Text>
+        <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>Sign up to continue</Text>
 
         {/* Email */}
         <View style={styles.inputGroup}>
           <View style={styles.inputHeader}>
-            <Text style={styles.inputLabel}>Email Address</Text>
-            <Text style={styles.link}>Use Mobile?</Text>
+            <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Email Address</Text>
+            <Text style={[styles.link, { color: theme.colors.primary }]}>Use Mobile?</Text>
           </View>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text }]}
             placeholder="Enter email address"
-            placeholderTextColor="#aaa"
+            placeholderTextColor={theme.colors.placeholder}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -75,37 +82,30 @@ const RegisterScreen: React.FC = () => {
 
         {/* Password */}
         <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Password</Text>
+          <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Password</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text }]}
               placeholder="Create password"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={theme.colors.placeholder}
               secureTextEntry={!showPassword}
               value={password}
               onChangeText={setPassword}
             />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={22}
-                color="#666"
-              />
+            <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color={theme.colors.secondary} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Confirm Password */}
         <View style={styles.inputGroup}>
-          <Text style={styles.inputLabel}>Confirm Password</Text>
+          <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Confirm Password</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text }]}
               placeholder="Re-enter password"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={theme.colors.placeholder}
               secureTextEntry={!showConfirmPassword}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
@@ -117,7 +117,7 @@ const RegisterScreen: React.FC = () => {
               <Ionicons
                 name={showConfirmPassword ? "eye-off" : "eye"}
                 size={22}
-                color="#666"
+                color={theme.colors.secondary}
               />
             </TouchableOpacity>
           </View>
@@ -128,20 +128,25 @@ const RegisterScreen: React.FC = () => {
           <Checkbox
             value={isChecked}
             onValueChange={setChecked}
-            color={isChecked ? "#0047FF" : undefined}
+            color={isChecked ? theme.colors.primary : undefined}
           />
-          <Text style={styles.checkboxText}>I agree with privacy policy</Text>
+          <Text style={[styles.checkboxText, { color: theme.colors.text }]}>
+            I agree with privacy policy
+          </Text>
         </View>
 
         {/* Sign Up Button */}
-        <TouchableOpacity style={styles.primaryButton} onPress={handleRegister}>
+        <TouchableOpacity
+          style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]}
+          onPress={handleRegister}
+        >
           <Text style={styles.primaryButtonText}>Sign Up</Text>
         </TouchableOpacity>
 
         {/* Divider */}
         <View style={styles.divider}>
           <View style={styles.line} />
-          <Text style={styles.orText}>or sign up with</Text>
+          <Text style={[styles.orText, { color: theme.colors.secondary }]}>or sign up with</Text>
           <View style={styles.line} />
         </View>
 
@@ -159,10 +164,10 @@ const RegisterScreen: React.FC = () => {
         </View>
 
         {/* Already have account */}
-        <Text style={styles.footerText}>
+        <Text style={[styles.footerText, { color: theme.colors.text }]}>
           Already have an account?{" "}
           <Text
-            style={styles.footerLink}
+            style={[styles.footerLink, { color: theme.colors.primary }]}
             onPress={() => router.push("/login")}
           >
             Login
@@ -174,6 +179,7 @@ const RegisterScreen: React.FC = () => {
 };
 
 export default RegisterScreen;
+
 
 const styles = StyleSheet.create({
   root: {

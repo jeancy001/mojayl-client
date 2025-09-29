@@ -1,4 +1,4 @@
-
+import { useTheme } from "@/context/theme-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -7,16 +7,26 @@ import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "rea
 const { width } = Dimensions.get("window");
 
 export default function WelcomeScreen() {
+  const { theme, toggleTheme } = useTheme(); 
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome</Text>
-        <Ionicons name="moon-outline" size={26} color="#0047FF" />
+        <Text style={[styles.welcomeText, { color: theme.colors.primary }]}>Welcome</Text>
+        <TouchableOpacity onPress={toggleTheme}>
+          <Ionicons
+            name={theme.dark ? "sunny" : "moon-outline"} // toggle icon based on dark/light
+            size={26}
+            color={theme.colors.primary}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Subtitle */}
-      <Text style={styles.subtitle}>Login or sign up to continue</Text>
+      <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>
+        Login or sign up to continue
+      </Text>
 
       {/* Illustration */}
       <Image
@@ -26,28 +36,32 @@ export default function WelcomeScreen() {
       />
 
       {/* App Info */}
-      <Text style={styles.appName}>SchedIt</Text>
-      <Text style={styles.appDescription}>
+      <Text style={[styles.appName, { color: theme.colors.primary }]}>SchedIt</Text>
+      <Text style={[styles.appDescription, { color: theme.colors.secondary }]}>
         A Family Scheduling App{"\n"}For Parents
       </Text>
 
       {/* Buttons */}
       <TouchableOpacity
-        style={styles.primaryButton}
+        style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]}
         onPress={() => router.push("/register")}
       >
         <Text style={styles.primaryButtonText}>Create Account</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.secondaryButton}
+        style={[styles.secondaryButton, { borderColor: theme.colors.primary }]}
         onPress={() => router.push("/login")}
       >
-        <Text style={styles.secondaryButtonText}>Already have an account?</Text>
+        <Text style={[styles.secondaryButtonText, { color: theme.colors.primary }]}>
+          Already have an account?
+        </Text>
       </TouchableOpacity>
 
       {/* Guest Option */}
-      <Text style={styles.guestText}>Continue as a guest</Text>
+      <Text style={[styles.guestText, { color: theme.colors.secondary }]}>
+        Continue as a guest
+      </Text>
     </View>
   );
 }
@@ -55,7 +69,6 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
     paddingHorizontal: 24,
     paddingTop: 40,
     justifyContent: "flex-start",
@@ -69,11 +82,9 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#0047FF",
   },
   subtitle: {
     fontSize: 16,
-    color: "#555",
     marginBottom: 30,
     fontWeight: "500",
   },
@@ -86,7 +97,6 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 30,
     fontWeight: "700",
-    color: "#0047FF",
     textAlign: "center",
     marginBottom: 6,
   },
@@ -94,11 +104,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     textAlign: "center",
-    color: "#444",
     marginBottom: 36,
   },
   primaryButton: {
-    backgroundColor: "#0047FF",
     borderRadius: 10,
     paddingVertical: 15,
     alignItems: "center",
@@ -112,7 +120,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   secondaryButton: {
-    borderColor: "#0047FF",
     borderWidth: 1.5,
     borderRadius: 10,
     paddingVertical: 15,
@@ -124,13 +131,10 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#0047FF",
   },
   guestText: {
     fontSize: 14,
-    color: "#666",
     textAlign: "center",
     marginTop: 8,
   },
 });
-
