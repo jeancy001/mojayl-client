@@ -13,6 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "@/context/authContext";
+import { AxiosError } from "axios";
 
 const RegisterScreen: React.FC = () => {
   const { theme, toggleTheme } = useTheme(); // get theme and toggle function
@@ -23,10 +25,53 @@ const RegisterScreen: React.FC = () => {
   const [isChecked, setChecked] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [error,  setError] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const handleRegister = () => {
-    console.log("Registering:", { email, password, confirmPassword, isChecked });
-  };
+
+  const {register}= useAuth()
+const handleRegister = async () => {
+  setLoading(true);
+  setError(""); 
+  try {
+    if (!email || !password || !confirmPassword || !isChecked) {
+      setError("Veuillez renseigner tous les champs.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Les mots de passe doivent être identiques.");
+      return;
+    }
+
+    const data = {
+      email,
+      password
+    };
+
+    await register(data);
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setChecked(false)
+    setLoading(false)
+
+    router.replace("/login")
+
+    console.log("Registering:", {
+      email,
+      password,
+      confirmPassword,
+      isChecked,
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string }>;
+    const message = err.response?.data?.message || err.message || "Erreur inconnue";
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <View
@@ -65,6 +110,7 @@ const RegisterScreen: React.FC = () => {
 
         {/* Email */}
         <View style={styles.inputGroup}>
+         {error && (<View style ={[styles.ErrorMessageViews, {backgroundColor:theme.colors.card}]}><Text style={styles.errMessage}>{error}</Text></View> )}
           <View style={styles.inputHeader}>
             <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Email Address</Text>
             <Text style={[styles.link, { color: theme.colors.primary }]}>Use Mobile?</Text>
@@ -140,7 +186,7 @@ const RegisterScreen: React.FC = () => {
           style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleRegister}
         >
-          <Text style={styles.primaryButtonText}>Sign Up</Text>
+          <Text style={styles.primaryButtonText}> {loading ? "Registring...":"Sign Up"}</Text>
         </TouchableOpacity>
 
         {/* Divider */}
@@ -277,4 +323,16 @@ const styles = StyleSheet.create({
   },
   footerText: { textAlign: "center", color: "#333", fontSize: 14 },
   footerLink: { color: "#0047FF", fontWeight: "bold" },
+  ErrorMessageViews:{
+   backgroundColor:"#eeb3b3ff",
+   padding:10,
+   borderRadius:2,
+   borderColor:"#ddd"
+  },
+  errMessage:{
+     fontSize:18,
+     fontWeight:"bold",
+     color:"#f33232ff",
+      paddingBottom:1,
+     }
 });

@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/context/authContext';
 import { ThemeProvider, useTheme } from '@/context/theme-context';
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -33,8 +34,10 @@ function AppContent() {
 
 export default function RootLayout() {
   return (
+    <AuthProvider>
     <ThemeProvider>
       <AppContent />
     </ThemeProvider>
+    </AuthProvider>
   );
 }

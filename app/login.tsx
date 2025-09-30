@@ -1,8 +1,10 @@
+import { useAuth } from "@/context/authContext";
 import { useTheme } from "@/context/theme-context";
 import { Ionicons } from "@expo/vector-icons";
 import { Checkbox } from "expo-checkbox";
 import { router } from "expo-router";
 import React, { useState } from "react";
+import { AxiosError } from "axios";
 import {
   Platform,
   ScrollView,
@@ -21,9 +23,37 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [keepLoggedIn, setKeepLoggedIn] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error,  setError] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
+  const {login} = useAuth()
 
-  const handleLogin = () => {
-    console.log("Logging in with:", { email, password, keepLoggedIn });
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(""); 
+    try {
+      if (!email || !password) {
+        setError("Veuillez renseigner tous les champs.");
+        return;
+      }
+  
+      await login(email, password);
+      setEmail("");
+      setPassword("");
+
+      setLoading(false)
+   
+  
+      console.log("Registering:", {
+        email,
+        password
+      });
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string }>;
+      const message = err.response?.data?.message || err.message || "Erreur inconnue";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,6 +93,8 @@ const LoginScreen: React.FC = () => {
 
         {/* Email */}
         <View style={styles.inputGroup}>
+         {error && (<View style ={[styles.ErrorMessageViews, {backgroundColor:theme.colors.card}]}><Text style={styles.errMessage}>{error}</Text></View> )}
+          
           <View style={styles.inputHeader}>
             <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Email Address</Text>
             <Text style={[styles.link, { color: theme.colors.primary }]}>Use Mobile?</Text>
@@ -132,7 +164,7 @@ const LoginScreen: React.FC = () => {
         {/* Social Buttons */}
         <View style={styles.socialContainer}>
           <TouchableOpacity style={[styles.socialButton, styles.shadow]}>
-            <Ionicons name="logo-google" size={22} color="#EA4335" />
+            <Ionicons name="logo-google" size={22}  style={[{color:"#EA4335"}]} />
           </TouchableOpacity>
           <TouchableOpacity style={[styles.socialButton, styles.shadow]}>
             <Ionicons name="logo-apple" size={22} color="#000" />
@@ -258,4 +290,16 @@ const styles = StyleSheet.create({
   },
   footerText: { textAlign: "center", color: "#333", fontSize: 14 },
   footerLink: { color: "#0047FF", fontWeight: "bold" },
+    ErrorMessageViews:{
+   backgroundColor:"#eeb3b3ff",
+   padding:10,
+   borderRadius:2,
+   borderColor:"#ddd"
+  },
+  errMessage:{
+     fontSize:18,
+     fontWeight:"bold",
+     color:"#f33232ff",
+      paddingBottom:1,
+     }
 });

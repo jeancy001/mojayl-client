@@ -1,0 +1,1 @@
+export const API_URL="https://mojayl-backend-mobile.onrender.com/api/v1"
