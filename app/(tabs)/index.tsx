@@ -4,8 +4,8 @@ import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
-      <View>
-        <Text> Index </Text>
+      <View >
+        <Text> Profile </Text>
         </View>
   );
 }
