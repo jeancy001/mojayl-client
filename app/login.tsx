@@ -151,7 +151,7 @@ const LoginScreen: React.FC = () => {
 
         {/* Login Button */}
         <TouchableOpacity style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]} onPress={handleLogin}>
-          <Text style={styles.primaryButtonText}>Login</Text>
+          <Text style={styles.primaryButtonText}> {loading ?"Loading..." :"Login" }</Text>
         </TouchableOpacity>
 
         {/* Divider */}
