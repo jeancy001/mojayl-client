@@ -41,6 +41,7 @@ const LoginScreen: React.FC = () => {
       setPassword("");
 
       setLoading(false)
+      router.replace("/(tabs)")
    
   
       console.log("Registering:", {
