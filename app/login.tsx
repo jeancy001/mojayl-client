@@ -1,14 +1,15 @@
 import { useAuth } from "@/context/authContext";
 import { useTheme } from "@/context/theme-context";
 import { Ionicons } from "@expo/vector-icons";
+import { AxiosError } from "axios";
 import { Checkbox } from "expo-checkbox";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { AxiosError } from "axios";
 import {
   Platform,
   ScrollView,
   StatusBar,
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -41,6 +42,11 @@ const LoginScreen: React.FC = () => {
       setPassword("");
 
       setLoading(false)
+        Alert.alert(
+          "Confirmation",
+          "Vous êtes connecté avec succès"
+        );
+
       router.replace("/(tabs)")
    
   
@@ -89,23 +95,23 @@ const LoginScreen: React.FC = () => {
         </View>
 
         {/* Title */}
-        <Text style={[styles.title, { color: theme.colors.primary }]}>Login Account</Text>
-        <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>Welcome Back 👋</Text>
+        <Text style={[styles.title, { color: theme.colors.primary }]}>Connexion </Text>
+        <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>Bienvenue  👋</Text>
 
         {/* Email */}
         <View style={styles.inputGroup}>
          {error && (<View style ={[styles.ErrorMessageViews, {backgroundColor:theme.colors.card}]}><Text style={styles.errMessage}>{error}</Text></View> )}
           
           <View style={styles.inputHeader}>
-            <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Email Address</Text>
-            <Text style={[styles.link, { color: theme.colors.primary }]}>Use Mobile?</Text>
+            <Text style={[styles.inputLabel, { color: theme.colors.link }]}>Email Address</Text>
+            <Text style={[styles.link, { color: theme.colors.link }]}>Use Mobile?</Text>
           </View>
           <TextInput
             style={[
               styles.input,
               { backgroundColor: theme.colors.card, borderColor: theme.colors.border, color: theme.colors.text },
             ]}
-            placeholder="Enter your email"
+            placeholder="Entrez votre Email"
             placeholderTextColor={theme.colors.placeholder}
             value={email}
             onChangeText={setEmail}
@@ -116,14 +122,14 @@ const LoginScreen: React.FC = () => {
 
         {/* Password */}
         <View style={styles.inputGroup}>
-          <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Password</Text>
+          <Text style={[styles.inputLabel, { color: theme.colors.link }]}>Mot de passe</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
               style={[
                 styles.input,
                 { backgroundColor: theme.colors.card, borderColor: theme.colors.border, color: theme.colors.text },
               ]}
-              placeholder="Enter your password"
+              placeholder="Entrez votre mot de passe"
               placeholderTextColor={theme.colors.placeholder}
               secureTextEntry={!showPassword}
               value={password}
@@ -143,22 +149,22 @@ const LoginScreen: React.FC = () => {
               onValueChange={setKeepLoggedIn}
               color={keepLoggedIn ? theme.colors.primary : undefined}
             />
-            <Text style={[styles.checkboxText, { color: theme.colors.text }]}>Keep me logged in</Text>
+            <Text style={[styles.checkboxText, { color: theme.colors.text }]}>Engistrer le mot de Passe</Text>
           </View>
           <Text style={[styles.link, { color: theme.colors.primary }]} onPress={() => router.push("/forgot")}>
-            Forgot Password?
+            Mot de passe oublié ?
           </Text>
         </View>
 
         {/* Login Button */}
         <TouchableOpacity style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]} onPress={handleLogin}>
-          <Text style={styles.primaryButtonText}> {loading ?"Loading..." :"Login" }</Text>
+          <Text style={styles.primaryButtonText}> {loading ?"connexion..." :"Connexion" }</Text>
         </TouchableOpacity>
 
         {/* Divider */}
         <View style={styles.divider}>
           <View style={[styles.line, { backgroundColor: theme.colors.border }]} />
-          <Text style={[styles.orText, { color: theme.colors.secondary }]}>or sign in with</Text>
+          <Text style={[styles.orText, { color: theme.colors.secondary }]}>or Se Connecter avec</Text>
           <View style={[styles.line, { backgroundColor: theme.colors.border }]} />
         </View>
 
@@ -177,12 +183,12 @@ const LoginScreen: React.FC = () => {
 
         {/* Footer */}
         <Text style={[styles.footerText, { color: theme.colors.text }]}>
-          Don’t have an account?{" "}
+          Vous n avez pas un Compte?{" "}
           <Text
             style={[styles.footerLink, { color: theme.colors.primary }]}
             onPress={() => router.push("/register")}
           >
-            Sign Up
+            Enregistrer
           </Text>
         </Text>
       </ScrollView>

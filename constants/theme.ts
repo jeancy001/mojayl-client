@@ -3,6 +3,7 @@ export type ThemeColors = {
   background: string;
   card: string;
   text: string;
+  link: string;
   primary: string;
   secondary: string;
   border: string;
@@ -20,8 +21,9 @@ export const lightTheme: Theme = {
   colors: {
     background: "#FFFFFF",
     card: "#FAFAFA",
+    link:"#3B82F6",
     text: "#111827",
-    primary: "#0047FF",
+    primary: "#ff455b",
     secondary: "#6B7280",
     border: "#E5E7EB",
     placeholder: "#9CA3AF",
@@ -35,7 +37,8 @@ export const darkTheme: Theme = {
     background: "#0B1220",
     card: "#0F1724",
     text: "#E6EEF8",
-    primary: "#3B82F6",
+    primary: "#ff455a",
+    link:"#3B82F6",
     secondary: "#9CA3AF",
     border: "#1F2937",
     placeholder: "#6B7280",

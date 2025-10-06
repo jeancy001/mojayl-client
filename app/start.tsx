@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 32,
     fontWeight: "700",
+    color:"#ff455b"
   },
   subtitle: {
     fontSize: 16,
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: "600",
+    color:"#ff455b"
   },
   guestText: {
     fontSize: 14,

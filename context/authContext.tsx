@@ -24,7 +24,8 @@ interface AuthContextType {
 
   // Password methods
   requestResetCode: (email: string) => Promise<void>;
-  resetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
+  verifyCode:(code:string)=>Promise<void>;
+  resetPassword: (code: string, newPassword: string) => Promise<void>;
   updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 
   // Profile methods
@@ -90,10 +91,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const requestResetCode = async (email: string) => {
     await axios.post(`${API_URL}/auth/request-code`, { email });
   };
+  
+  /** ----------------- Verify  Code ----------------- */
+  const verifyCode = async (code: string) => {
+    await axios.post(`${API_URL}/auth/verify-code`, { code });
+  };
+
 
   /** ----------------- RESET PASSWORD ----------------- */
-  const resetPassword = async (email: string, code: string, newPassword: string) => {
-    await axios.post(`${API_URL}/auth/reset-password`, { email, code, newPassword });
+  const resetPassword = async ( code: string, newPassword: string) => {
+    await axios.post(`${API_URL}/auth/reset-password`, { code, newPassword });
   };
 
   /** ----------------- UPDATE PASSWORD ----------------- */
@@ -178,6 +185,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         getProfiles,
         deleteProfile,
         refreshToken,
+        verifyCode
       }}
     >
       {children}

@@ -1,5 +1,7 @@
+import { useAuth } from "@/context/authContext";
 import { useTheme } from "@/context/theme-context";
 import { Ionicons } from "@expo/vector-icons";
+import { AxiosError } from "axios";
 import Checkbox from "expo-checkbox";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -9,12 +11,11 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  Alert,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "@/context/authContext";
-import { AxiosError } from "axios";
 
 const RegisterScreen: React.FC = () => {
   const { theme, toggleTheme } = useTheme(); // get theme and toggle function
@@ -56,7 +57,12 @@ const handleRegister = async () => {
     setChecked(false)
     setLoading(false)
 
-    router.replace("/login")
+    Alert.alert(
+  "Confirmation",
+  "Vous êtes inscrit avec succès"
+);
+
+    router.replace("/(tabs)")
 
     console.log("Registering:", {
       email,
@@ -105,19 +111,19 @@ const handleRegister = async () => {
         </View>
 
         {/* Title */}
-        <Text style={[styles.title, { color: theme.colors.primary }]}>Create Account</Text>
-        <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>Sign up to continue</Text>
+        <Text style={[styles.title, { color: theme.colors.primary }]}>Créez un compte</Text>
+        <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>Inscrivez-vous pour continuer</Text>
 
         {/* Email */}
         <View style={styles.inputGroup}>
          {error && (<View style ={[styles.ErrorMessageViews, {backgroundColor:theme.colors.card}]}><Text style={styles.errMessage}>{error}</Text></View> )}
           <View style={styles.inputHeader}>
-            <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Email Address</Text>
-            <Text style={[styles.link, { color: theme.colors.primary }]}>Use Mobile?</Text>
+            <Text style={[styles.inputLabel, { color: theme.colors.link }]}>Email Address</Text>
+            <Text style={[styles.link, { color: theme.colors.link }]}>Utiliser un Téléphone </Text>
           </View>
           <TextInput
             style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text }]}
-            placeholder="Enter email address"
+            placeholder="Entrer Votre  Email"
             placeholderTextColor={theme.colors.placeholder}
             value={email}
             onChangeText={setEmail}
@@ -128,11 +134,11 @@ const handleRegister = async () => {
 
         {/* Password */}
         <View style={styles.inputGroup}>
-          <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Password</Text>
+          <Text style={[styles.inputLabel, { color: theme.colors.link }]}>Mot de passe</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
               style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text }]}
-              placeholder="Create password"
+              placeholder="Créez un Mot de passe"
               placeholderTextColor={theme.colors.placeholder}
               secureTextEntry={!showPassword}
               value={password}
@@ -146,11 +152,11 @@ const handleRegister = async () => {
 
         {/* Confirm Password */}
         <View style={styles.inputGroup}>
-          <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>Confirm Password</Text>
+          <Text style={[styles.inputLabel, { color: theme.colors.link }]}>Confirmez votre mot de passe</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
               style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text }]}
-              placeholder="Re-enter password"
+              placeholder="Confirmez votre mot de passe"
               placeholderTextColor={theme.colors.placeholder}
               secureTextEntry={!showConfirmPassword}
               value={confirmPassword}
@@ -177,7 +183,7 @@ const handleRegister = async () => {
             color={isChecked ? theme.colors.primary : undefined}
           />
           <Text style={[styles.checkboxText, { color: theme.colors.text }]}>
-            I agree with privacy policy
+           J’accepte la politique de confidentialité
           </Text>
         </View>
 
@@ -186,13 +192,13 @@ const handleRegister = async () => {
           style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleRegister}
         >
-          <Text style={styles.primaryButtonText}> {loading ? "Registring...":"Sign Up"}</Text>
+          <Text style={styles.primaryButtonText}> {loading ? "Enregistrement...":"Inscrivez-vous"}</Text>
         </TouchableOpacity>
 
         {/* Divider */}
         <View style={styles.divider}>
           <View style={styles.line} />
-          <Text style={[styles.orText, { color: theme.colors.secondary }]}>or sign up with</Text>
+          <Text style={[styles.orText, { color: theme.colors.link }]}>Ou  Continuer  avec</Text>
           <View style={styles.line} />
         </View>
 
@@ -211,12 +217,12 @@ const handleRegister = async () => {
 
         {/* Already have account */}
         <Text style={[styles.footerText, { color: theme.colors.text }]}>
-          Already have an account?{" "}
+          Avez-vous  deja  un compte?{" "}
           <Text
             style={[styles.footerLink, { color: theme.colors.primary }]}
             onPress={() => router.push("/login")}
           >
-            Login
+            Connexion
           </Text>
         </Text>
       </ScrollView>
