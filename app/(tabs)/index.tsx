@@ -1,22 +1,63 @@
 import ProfileInfo from "@/components/ProfileInfo";
 import { useAuth } from "@/context/authContext";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import React, { useEffect, useState } from "react";
 import {
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+  Alert,
+  Image, ImageBackground,
+  ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from "react-native";
 
 export default function HomeScreen() {
   const [activeMode, setActiveMode] = useState<"expediteur" | "transporteur">(
     "expediteur"
   );
+  const [imageUrl, setImageUrl]= useState<string|null>(null)
+  const [statut, setStatut] = useState<string | null>(null);
   const { user } = useAuth();
+
+  
+// Demande de permission au montage du composant
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setStatut(status);
+
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission requise",
+          "Vous devez autoriser l’accès à vos photos pour pouvoir choisir une image de profil."
+        );
+      }
+    })();
+  }, []);
+
+  // Gestion du sélecteur d'image
+  const handleImagePicker = async () => {
+    if (statut !== "granted") {
+      Alert.alert(
+        "Permission refusée",
+        "Veuillez autoriser l’accès aux photos dans les paramètres pour continuer."
+      );
+      return;
+    }
+
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setImageUrl(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.log("Erreur lors de la sélection de l’image :", error);
+      Alert.alert("Erreur", "Une erreur est survenue lors du choix de l’image.");
+    }
+  };
 
   return (
     <View>
@@ -30,12 +71,28 @@ export default function HomeScreen() {
             resizeMode="cover"
           >
             <View style={styles.overlay}>
+              {imageUrl?(
+               <TouchableOpacity onPress={handleImagePicker}>
               <View style={styles.profileImageContainer}>
+               
+                <Image
+                  source={{uri:imageUrl}}
+                  style={styles.profileImage}
+                />
+              </View>
+                </TouchableOpacity>
+              ):(
+               <TouchableOpacity onPress={handleImagePicker}>
+              <View style={styles.profileImageContainer}>
+               
                 <Image
                   source={require("../../assets/profile/profile.png")}
                   style={styles.profileImage}
                 />
               </View>
+                </TouchableOpacity>
+              )}
+
     
             </View>
           </ImageBackground>
@@ -177,16 +234,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 8,
-    marginHorizontal: 25,
+    padding: 2,
+    marginHorizontal:20,
     borderRadius: 50,
     elevation: 2,
   },
   buttonMode: {
     flex: 1,
     paddingVertical: 15,
-    marginHorizontal: 5,
-    backgroundColor: "#fff",
+    marginHorizontal:1,
+    backgroundColor: "#ececec",
+   
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -197,10 +255,10 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   activeButton: {
-    backgroundColor: "#ff455b",
+    backgroundColor: "#fff",
   },
   activeText: {
-    color: "#fff",
+    color: "#333",
   },
   modeStatus: {
     alignItems: "center",

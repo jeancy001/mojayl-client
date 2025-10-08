@@ -1,12 +1,13 @@
 import ArrowCircleButton from "@/components/ArrowCircleButton";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
-// Data for 3 slides
+// Données des slides
 const slides = [
   {
     id: "1",
@@ -21,35 +22,62 @@ const slides = [
   {
     id: "3",
     image: require("../assets/images/logo3.png"),
-    text: "Parcourez les annonces,choisissez votre transporteur ou proposez vos services",
+    text: "Parcourez les annonces, choisissez votre transporteur ou proposez vos services",
   },
 ];
 
 const Didacticiel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
+  const router = useRouter();
 
-  const router = useRouter()
+  /** ---------- Charger la page sauvegardée ---------- */
+  useEffect(() => {
+    const loadSavedPage = async () => {
+      try {
+        const savedIndex = await AsyncStorage.getItem("didacticielPage");
+        if (savedIndex !== null) {
+          const index = parseInt(savedIndex, 10);
+          setCurrentIndex(index);
+          setTimeout(() => {
+            flatListRef.current?.scrollToIndex({ index, animated: false });
+          }, 100);
+        }
+      } catch (error) {
+        console.warn("Erreur lors du chargement de la page :", error);
+      }
+    };
+    loadSavedPage();
+  }, []);
 
-  // Handle scroll
-  const handleScroll = (event: any) => {
+  /** ---------- Sauvegarder la page courante ---------- */
+  const handleScroll = async (event: any) => {
     const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentIndex(slideIndex);
+    try {
+      await AsyncStorage.setItem("didacticielPage", slideIndex.toString());
+    } catch (error) {
+      console.warn("Erreur lors de la sauvegarde :", error);
+    }
   };
 
-  // Next button
-  const goNext = () => {
+  /** ---------- Aller à la page suivante ---------- */
+  const goNext = async () => {
     if (currentIndex < slides.length - 1) {
-      flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
+      const nextIndex = currentIndex + 1;
+      flatListRef.current?.scrollToIndex({ index: nextIndex });
+      setCurrentIndex(nextIndex);
+      await AsyncStorage.setItem("didacticielPage", nextIndex.toString());
     } else {
-      router.replace("/start")
+      // Supprime la clé après avoir fini le didacticiel
+      await AsyncStorage.removeItem("didacticielPage");
+      router.replace("/start");
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* FlatList for slides */}
-      <StatusBar style="dark"/>
+      <StatusBar style="dark" />
       <FlatList
         data={slides}
         ref={flatListRef}
@@ -67,7 +95,7 @@ const Didacticiel = () => {
         )}
       />
 
-      {/* Pagination Dots */}
+      {/* Points d’indication */}
       <View style={styles.dotsContainer}>
         {slides.map((_, index) => (
           <View
@@ -80,7 +108,7 @@ const Didacticiel = () => {
         ))}
       </View>
 
-      {/* Next Button */}
+      {/* Bouton suivant */}
       <View style={styles.ButtonContainer}>
         <ArrowCircleButton onPress={goNext} />
       </View>
@@ -109,12 +137,12 @@ const styles = StyleSheet.create({
     height: 250,
   },
   text: {
-  fontSize: 20,
-  textAlign: "center",
-  marginTop: 10,
-  color: "#333",
-  lineHeight: 26, 
-  paddingHorizontal: 15
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 10,
+    color: "#333",
+    lineHeight: 26,
+    paddingHorizontal: 15,
   },
   dotsContainer: {
     flexDirection: "row",
@@ -130,6 +158,6 @@ const styles = StyleSheet.create({
   ButtonContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 40,
+    marginBottom: "30%",
   },
 });

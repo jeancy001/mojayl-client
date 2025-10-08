@@ -7,7 +7,7 @@ const Didaticiel = () => {
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.wrapContent}>
-        <View style={styles.whatCircle}></View>
+        <View style={styles.whiteCircle}></View>
         <Text style={styles.mojaylText}>Mojayl</Text>
       </View>
     </View>
@@ -19,25 +19,26 @@ export default Didaticiel;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: "#FF455B",
+    justifyContent: "center", 
+    alignItems: "center",
   },
   wrapContent: {
-    flex: 1,
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
     gap: 10,
   },
-  whatCircle: {
+  whiteCircle: {
     width: 50,
     height: 50,
     backgroundColor: "#fff",
-    borderRadius: "100%",
+    borderRadius: 25, 
   },
   mojaylText: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 22,
+    fontWeight: "700",
     color: "#fff",
+    letterSpacing: 1,
   },
 });
