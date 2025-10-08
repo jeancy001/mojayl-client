@@ -15,9 +15,9 @@ export default function HomeScreen() {
   );
   const [imageUrl, setImageUrl]= useState<string|null>(null)
   const [statut, setStatut] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { user ,updateProfile, accessToken} = useAuth();
 
-  
+  console.log(accessToken)
 // Demande de permission au montage du composant
   useEffect(() => {
     (async () => {
@@ -33,31 +33,57 @@ export default function HomeScreen() {
     })();
   }, []);
 
-  // Gestion du sélecteur d'image
-  const handleImagePicker = async () => {
-    if (statut !== "granted") {
-      Alert.alert(
-        "Permission refusée",
-        "Veuillez autoriser l’accès aux photos dans les paramètres pour continuer."
-      );
-      return;
-    }
+// Gestion du sélecteur d'image
+const handleImagePicker = async () => {
+  if (statut !== "granted") {
+    Alert.alert(
+      "Permission refusée",
+      "Veuillez autoriser l’accès aux photos dans les paramètres pour continuer."
+    );
+    return;
+  }
 
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
-        allowsEditing: true,
-        quality: 1,
-      });
+  try {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
 
-      if (!result.canceled) {
-        setImageUrl(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log("Erreur lors de la sélection de l’image :", error);
-      Alert.alert("Erreur", "Une erreur est survenue lors du choix de l’image.");
+    if (!result.canceled) {
+      const pickedImage = result.assets[0];
+      setImageUrl(pickedImage.uri);
+
+      console.log("🖼️ Image Profile:", pickedImage.uri);
+
+      // Extract file info
+      const uriParts = pickedImage.uri.split("/");
+      const name = uriParts[uriParts.length - 1];
+      const match = /\.(\w+)$/.exec(name);
+      const type = match ? `image/${match[1]}` : "image/jpeg";
+
+      // Build the file object for FormData
+      const file = {
+        uri: pickedImage.uri,
+        name,
+        type,
+      };
+
+      console.log("📄 ProfileFile:", file);
+
+      // Send image to backend
+      await updateProfile({}, file);
+
+      Alert.alert("✅ Succès", "Votre photo de profil a été mise à jour !");
+      console.log("🚀 Image envoyée :", file);
     }
-  };
+  } catch (error) {
+    console.error("❌ Erreur lors de la sélection de l’image :", error);
+    Alert.alert("Erreur", "Une erreur est survenue lors du choix de l’image.");
+  }
+};
+
+
 
   return (
     <View>
@@ -71,12 +97,12 @@ export default function HomeScreen() {
             resizeMode="cover"
           >
             <View style={styles.overlay}>
-              {imageUrl?(
+              {user?.profileUrl ?(
                <TouchableOpacity onPress={handleImagePicker}>
               <View style={styles.profileImageContainer}>
                
                 <Image
-                  source={{uri:imageUrl}}
+                  source={{uri: user?.profileUrl}}
                   style={styles.profileImage}
                 />
               </View>
